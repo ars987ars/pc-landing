@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ЯДРО — сборка компьютеров на заказ</title>
+<meta name="description" content="Сборка компьютеров на заказ: подберём конфигурацию под бюджет и задачи, соберём, протестируем под нагрузкой 24 часа и доставим. Гарантия 12 месяцев.">
+
+<!-- Open Graph — превью при отправке ссылки в VK/Telegram. Замени domain и og-image на свои -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="ЯДРО — сборка компьютеров на заказ">
+<meta property="og:description" content="Подберём конфигурацию под бюджет и задачи, соберём, протестируем и доставим. Гарантия 12 месяцев.">
+<meta property="og:image" content="https://your-domain.example/og-image.jpg">
+<meta property="og:url" content="https://your-domain.example/">
+<meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="alternate icon" href="favicon.svg">
+
+<!-- Яндекс.Метрика — вставь свой номер счётчика и раскомментируй -->
+<!--
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+   ym(COUNTER_ID, "init", { clickmap:true, trackLinks:true, accurateTrackBounce:true });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/COUNTER_ID" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+-->
+
+<!-- VK Pixel (ретаргетинг) — вставь свой ID и раскомментируй -->
+<!--
+<script>
+  VK.Retargeting.Init("VK-RTRG-XXXXXX-XXXXX");
+  VK.Retargeting.Hit();
+</script>
+<noscript><img src="https://vk.com/rtrg?p=VK-RTRG-XXXXXX-XXXXX" style="position:fixed; left:-999px;" alt="" /></noscript>
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0F1620;
+    --bg-elevated:#161F2C;
+    --bg-elevated-2:#1C2734;
+    --line:#2B3849;
+    --line-strong:#3C4C60;
+    --text:#E7EBEF;
+    --text-muted:#8E9BAC;
+    --accent:#C9823E;
+    --accent-strong:#E0954A;
+    --accent-soft:rgba(201,130,62,0.12);
+    --accent-2:#4C93B8;
+    --radius:2px;
+    --maxw:1120px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-weight:600;
+    line-height:1.1;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  p{margin:0;}
+  a{color:inherit;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .container{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+  ::selection{background:var(--accent-soft);color:var(--text);}
+  :focus-visible{outline:2px solid var(--accent-strong);outline-offset:3px;}
+
+  /* header */
+  .header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(15,22,32,0.88);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .header-inner{
+    max-width:var(--maxw);margin:0 auto;padding:16px 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-size:1.05rem;letter-spacing:0.02em;white-space:nowrap;}
+  .brand-mark{flex:none;}
+  nav.links{display:flex;gap:28px;align-items:center;}
+  nav.links a{
+    font-size:0.9rem;color:var(--text-muted);text-decoration:none;
+    transition:color .15s ease;
+  }
+  nav.links a:hover{color:var(--text);}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    padding:11px 20px;
+    background:var(--accent);
+    color:#12140F;
+    font-weight:600;
+    font-size:0.92rem;
+    border:none;
+    border-radius:var(--radius);
+    cursor:pointer;
+    text-decoration:none;
+    transition:background .15s ease;
+  }
+  .btn:hover{background:var(--accent-strong);}
+  .btn-ghost{
+    background:transparent;
+    border:1px solid var(--line-strong);
+    color:var(--text);
+  }
+  .btn-ghost:hover{border-color:var(--accent);background:var(--accent-soft);}
+  .header .btn{padding:9px 16px;font-size:0.86rem;}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;padding:96px 24px 88px;}
+  .hero::before{
+    content:"";
+    position:absolute;inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, var(--line) 0 1px, transparent 1px 64px),
+      repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 64px);
+    opacity:0.22;
+    mask-image:radial-gradient(ellipse 70% 60% at 30% 20%, black 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .hero-inner{
+    position:relative;
+    max-width:var(--maxw);margin:0 auto;
+    display:grid;grid-template-columns:1.15fr 0.85fr;gap:64px;align-items:center;
+  }
+  .hero h1{font-size:clamp(2.1rem,4.2vw,3.4rem);}
+  .hero p.lead{
+    margin-top:22px;color:var(--text-muted);font-size:1.05rem;max-width:46ch;
+  }
+  .hero-cta{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap;}
+  .hero-cta .btn{padding:13px 24px;font-size:0.95rem;}
+
+  /* ticket */
+  .ticket{
+    background:var(--bg-elevated);
+    border:1px solid var(--line);
+    border-left:4px solid var(--accent);
+    padding:26px 26px 22px;
+  }
+  .ticket-head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding-bottom:16px;border-bottom:1px solid var(--line);
+    margin-bottom:6px;
+  }
+  .ticket-head .t-label{font-size:0.82rem;color:var(--text-muted);}
+  .ticket-status{
+    display:flex;align-items:center;gap:6px;font-size:0.78rem;color:var(--accent-2);
+  }
+  .ticket-status .dot{width:6px;height:6px;background:var(--accent-2);border-radius:50%;flex:none;}
+  .ticket-row{
+    display:flex;justify-content:space-between;gap:16px;
+    padding:11px 0;border-bottom:1px solid var(--line);
+    font-size:0.9rem;opacity:0;transform:translateY(4px);
+    transition:opacity .4s ease, transform .4s ease;
+  }
+  .ticket-row.show{opacity:1;transform:translateY(0);}
+  .ticket-row .k{color:var(--text-muted);}
+  .ticket-row .v{text-align:right;}
+  .ticket-total{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding-top:16px;margin-top:4px;
+  }
+  .ticket-total .k{font-size:0.9rem;color:var(--text-muted);}
+  .ticket-total .v{font-size:1.5rem;font-weight:600;color:var(--accent-strong);}
+  .ticket-note{margin-top:14px;font-size:0.78rem;color:var(--text-muted);}
+
+  section{padding:80px 24px;border-top:1px solid var(--line);}
+  .section-head{max-width:56ch;}
+  .section-head h2{font-size:clamp(1.5rem,2.6vw,2.1rem);}
+  .section-head p{margin-top:14px;color:var(--text-muted);}
+
+  /* process */
+  .steps{
+    margin-top:56px;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:32px;
+    position:relative;
+  }
+  .steps::before{
+    content:"";position:absolute;top:16px;left:0;right:0;height:1px;
+    background:var(--line);z-index:0;
+  }
+  .step{position:relative;z-index:1;}
+  .step .num{
+    display:inline-block;background:var(--bg);padding-right:14px;
+    font-size:1.1rem;color:var(--accent);
+  }
+  .step h3{margin-top:16px;font-size:1.02rem;font-weight:600;}
+  .step p{margin-top:8px;font-size:0.9rem;color:var(--text-muted);}
+
+  /* builds */
+  .builds-wrap{background:var(--bg-elevated);}
+  .builds{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+  .build-card{background:var(--bg-elevated);padding:28px;display:flex;flex-direction:column;}
+  .build-card h3{font-size:1.08rem;}
+  .build-card .from{margin-top:8px;font-size:0.85rem;color:var(--text-muted);}
+  .build-card .from strong{color:var(--accent-strong);font-family:'IBM Plex Mono',monospace;font-size:1.15rem;font-weight:600;}
+  .build-list{margin-top:20px;padding:0;list-style:none;flex:1;}
+  .build-list li{
+    position:relative;padding:8px 0 8px 20px;font-size:0.88rem;color:var(--text);
+    border-top:1px solid var(--line);
+  }
+  .build-list li:first-child{border-top:none;}
+  .build-list li::before{
+    content:"";position:absolute;left:0;top:14px;width:8px;height:8px;
+    border-left:1.5px solid var(--accent);border-top:1.5px solid var(--accent);
+  }
+  .build-card .btn{margin-top:24px;}
+
+  /* trust */
+  .trust-row{
+    margin-top:56px;display:grid;grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--line);border-left:1px solid var(--line);
+  }
+  .trust-item{padding:22px 22px 22px 0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding-left:22px;}
+  .trust-item .fig{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:1.3rem;}
+  .trust-item p{margin-top:10px;font-size:0.88rem;color:var(--text-muted);}
+
+  /* form */
+  .form-wrap{
+    max-width:640px;margin:56px auto 0;
+    background:var(--bg-elevated);border:1px solid var(--line);border-left:4px solid var(--accent);
+    padding:32px;
+  }
+  .field{margin-bottom:18px;}
+  .field label{display:block;font-size:0.85rem;color:var(--text-muted);margin-bottom:7px;}
+  .field input,.field select,.field textarea{
+    width:100%;background:var(--bg-elevated-2);border:1px solid var(--line-strong);
+    color:var(--text);padding:11px 12px;font-size:0.94rem;font-family:inherit;border-radius:var(--radius);
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent);}
+  .field textarea{resize:vertical;min-height:90px;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .form-note{font-size:0.8rem;color:var(--text-muted);margin-top:4px;}
+  #form-success{display:none;text-align:center;padding:20px 0;}
+  #form-success h3{font-size:1.15rem;}
+  #form-success p{margin-top:10px;color:var(--text-muted);font-size:0.92rem;}
+
+  footer{padding:40px 24px;border-top:1px solid var(--line);}
+  .footer-inner{
+    max-width:var(--maxw);margin:0 auto;display:flex;justify-content:space-between;
+    align-items:center;flex-wrap:wrap;gap:16px;font-size:0.85rem;color:var(--text-muted);
+  }
+  .footer-inner .contacts{display:flex;gap:20px;}
+
+  @media (max-width:900px){
+    .hero-inner{grid-template-columns:1fr;}
+    .steps{grid-template-columns:repeat(2,1fr);row-gap:40px;}
+    .steps::before{display:none;}
+    .builds{grid-template-columns:1fr;}
+    .trust-row{grid-template-columns:repeat(2,1fr);}
+    nav.links{display:none;}
+  }
+  @media (max-width:560px){
+    .field-row{grid-template-columns:1fr;}
+    .steps{grid-template-columns:1fr;}
+    .trust-row{grid-template-columns:1fr;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .ticket-row{transition:none;opacity:1;transform:none;}
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <svg class="brand-mark" width="26" height="26" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 8V2H8" stroke="#C9823E" stroke-width="2"/>
+        <path d="M26 8V2H20" stroke="#C9823E" stroke-width="2"/>
+        <path d="M2 20V26H8" stroke="#C9823E" stroke-width="2"/>
+        <path d="M26 20V26H20" stroke="#C9823E" stroke-width="2"/>
+        <rect x="10" y="10" width="8" height="8" stroke="#E7EBEF" stroke-width="1.4"/>
+      </svg>
+      <span class="mono">ЯДРО</span>
+    </div>
+    <nav class="links">
+      <a href="#process">Как это работает</a>
+      <a href="#builds">Сборки</a>
+      <a href="#trust">Гарантии</a>
+    </nav>
+    <a href="#form" class="btn">Оставить заявку</a>
+  </div>
+</header>
+
+<section class="hero" style="border-top:none;padding-top:96px;">
+  <div class="hero-inner">
+    <div>
+      <h1>Компьютер под твои задачи, а не под витрину магазина</h1>
+      <p class="lead">Расскажи, для чего нужен ПК и какой бюджет — подберём комплектующие, соберём, протестируем под нагрузкой и привезём готовым к работе.</p>
+      <div class="hero-cta">
+        <a href="#form" class="btn">Оставить заявку</a>
+        <a href="#builds" class="btn btn-ghost">Посмотреть варианты сборок</a>
+      </div>
+    </div>
+
+    <div class="ticket" id="ticket">
+      <div class="ticket-head">
+        <span class="t-label mono">Пример сборки — игровой ПК</span>
+        <span class="ticket-status"><span class="dot"></span>протестирована</span>
+      </div>
+      <div class="ticket-row"><span class="k">Процессор</span><span class="v mono">уровня Ryzen 5, 6 ядер</span></div>
+      <div class="ticket-row"><span class="k">Видеокарта</span><span class="v mono">для игр в 1440p</span></div>
+      <div class="ticket-row"><span class="k">Оперативная память</span><span class="v mono">32 ГБ DDR5</span></div>
+      <div class="ticket-row"><span class="k">Накопитель</span><span class="v mono">1 ТБ NVMe SSD</span></div>
+      <div class="ticket-row"><span class="k">Блок питания</span><span class="v mono">650 Вт, 80+ Bronze</span></div>
+      <div class="ticket-row"><span class="k">Срок сборки</span><span class="v mono">2–4 дня</span></div>
+      <div class="ticket-total">
+        <span class="k">Итого</span>
+        <span class="v mono">~120 000 ₽</span>
+      </div>
+      <p class="ticket-note">Комплектующие — пример. Итоговая цена зависит от наличия и курса на момент заказа.</p>
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="section-head">
+    <h2>Как проходит заказ</h2>
+    <p>Четыре шага от заявки до компьютера, который уже стоит на столе и работает.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <span class="num mono">01</span>
+      <h3>Заявка</h3>
+      <p>Пишешь бюджет и задачи: игры, работа, монтаж, учёба — что угодно.</p>
+    </div>
+    <div class="step">
+      <span class="num mono">02</span>
+      <h3>Подбор конфигурации</h3>
+      <p>Предлагаем 2–3 варианта комплектации под бюджет, объясняем разницу.</p>
+    </div>
+    <div class="step">
+      <span class="num mono">03</span>
+      <h3>Сборка и тесты</h3>
+      <p>Собираем и прогоняем под нагрузкой минимум 24 часа перед выдачей.</p>
+    </div>
+    <div class="step">
+      <span class="num mono">04</span>
+      <h3>Доставка или самовывоз</h3>
+      <p>Привозим и настраиваем на месте либо отдаём готовый комплект лично.</p>
+    </div>
+  </div>
+</section>
+
+<div class="builds-wrap">
+<section id="builds" style="border-top:none;">
+  <div class="section-head">
+    <h2>С чего обычно начинают</h2>
+    <p>Три частых запроса. Дальше конфигурацию всегда подгоняем под конкретный бюджет и задачи.</p>
+  </div>
+  <div class="builds">
+    <div class="build-card">
+      <h3>Для учёбы и офиса</h3>
+      <p class="from">от <strong>45 000 ₽</strong></p>
+      <ul class="build-list">
+        <li>Процессор начального уровня</li>
+        <li>16 ГБ оперативной памяти</li>
+        <li>SSD-накопитель 512 ГБ</li>
+        <li>Без дискретной видеокарты</li>
+        <li>Тихий компактный корпус</li>
+      </ul>
+      <a href="#form" class="btn btn-ghost">Обсудить сборку</a>
+    </div>
+    <div class="build-card">
+      <h3>Для игр</h3>
+      <p class="from">от <strong>95 000 ₽</strong></p>
+      <ul class="build-list">
+        <li>Процессor среднего уровня</li>
+        <li>Видеокарта для 1080p–1440p</li>
+        <li>32 ГБ DDR5</li>
+        <li>NVMe SSD от 1 ТБ</li>
+        <li>Продуманное охлаждение и обдув</li>
+      </ul>
+      <a href="#form" class="btn btn-ghost">Обсудить сборку</a>
+    </div>
+    <div class="build-card">
+      <h3>Для рендера, монтажа, стриминга</h3>
+      <p class="from">от <strong>160 000 ₽</strong></p>
+      <ul class="build-list">
+        <li>Многоядерный процессор</li>
+        <li>Видеокарта с большим объёмом видеопамяти</li>
+        <li>64 ГБ оперативной памяти</li>
+        <li>Быстрый NVMe SSD + доп. накопитель</li>
+        <li>Усиленная система охлаждения</li>
+      </ul>
+      <a href="#form" class="btn btn-ghost">Обсудить сборку</a>
+    </div>
+  </div>
+</section>
+</div>
+
+<section id="trust">
+  <div class="section-head">
+    <h2>Что входит в заказ по умолчанию</h2>
+  </div>
+  <div class="trust-row">
+    <div class="trust-item">
+      <div class="fig mono">12 мес.</div>
+      <p>Гарантия на сборку и работоспособность системы</p>
+    </div>
+    <div class="trust-item">
+      <div class="fig mono">24 ч.</div>
+      <p>Тест под нагрузкой перед выдачей компьютера</p>
+    </div>
+    <div class="trust-item">
+      <div class="fig mono">100%</div>
+      <p>Чеки и документы на все комплектующие</p>
+    </div>
+    <div class="trust-item">
+      <div class="fig mono">после</div>
+      <p>Консультация по телефону уже после покупки</p>
+    </div>
+  </div>
+</section>
+
+<section id="form">
+  <div class="section-head" style="max-width:640px;margin:0 auto;text-align:left;">
+    <h2>Оставить заявку</h2>
+    <p>Ответим в течение рабочего дня и предложим варианты под твой бюджет.</p>
+  </div>
+
+  <form class="form-wrap" id="lead-form">
+    <div class="field-row">
+      <div class="field">
+        <label for="name">Имя</label>
+        <input id="name" name="name" type="text" required>
+      </div>
+      <div class="field">
+        <label for="contact">Телефон или Telegram</label>
+        <input id="contact" name="contact" type="text" required>
+      </div>
+    </div>
+    <div class="field">
+      <label for="budget">Примерный бюджет</label>
+      <select id="budget" name="budget">
+        <option>до 60 000 ₽</option>
+        <option>60 000–120 000 ₽</option>
+        <option>120 000–200 000 ₽</option>
+        <option>от 200 000 ₽</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="task">Для чего нужен компьютер</label>
+      <textarea id="task" name="task" placeholder="Игры, работа, монтаж видео, учёба..."></textarea>
+    </div>
+    <input type="hidden" name="utm_source" id="utm_source">
+    <input type="hidden" name="utm_medium" id="utm_medium">
+    <input type="hidden" name="utm_campaign" id="utm_campaign">
+    <input type="hidden" name="utm_content" id="utm_content">
+    <button type="submit" class="btn" style="width:100%;">Отправить заявку</button>
+    <p class="form-note">Нажимая «Отправить заявку», ты соглашаешься на обработку контактных данных для связи по заказу.</p>
+  </form>
+
+  <div class="form-wrap" id="form-success">
+    <h3>Заявка получена</h3>
+    <p>Свяжемся в течение рабочего дня по указанному контакту.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <span class="mono">ЯДРО — сборка компьютеров на заказ</span>
+    <div class="contacts">
+      <span>+7 (___) ___-__-__</span>
+      <span>t.me/username</span>
+    </div>
+    <span>© 2026</span>
+  </div>
+</footer>
+
+<script>
+  // Один орchestrированный момент при загрузке: строки тикета проявляются по очереди
+  (function(){
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var rows = document.querySelectorAll('#ticket .ticket-row');
+    if(reduced){
+      rows.forEach(function(r){ r.classList.add('show'); });
+      return;
+    }
+    rows.forEach(function(row, i){
+      setTimeout(function(){ row.classList.add('show'); }, 250 + i * 90);
+    });
+  })();
+
+  // Захват UTM-меток из ссылки (?utm_source=vk&utm_campaign=...) в скрытые поля формы,
+  // чтобы при подключении реального приёма заявок было видно, откуда пришёл клиент
+  (function(){
+    var params = new URLSearchParams(window.location.search);
+    ['utm_source','utm_medium','utm_campaign','utm_content'].forEach(function(key){
+      var field = document.getElementById(key);
+      if(field && params.get(key)) field.value = params.get(key);
+    });
+  })();
+
+  // Форма заявки: демонстрационная отправка без бэкенда
+  document.getElementById('lead-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    this.style.display = 'none';
+    document.getElementById('form-success').style.display = 'block';
+  });
+</script>
+
+</body>
+</html>
